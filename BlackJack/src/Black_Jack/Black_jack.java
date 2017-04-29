@@ -16,10 +16,12 @@ import java.applet.*;
 		Mano manoJugador;
 		Mano manoCrouppier;
 		TextField apuesta;
+		Boolean puedoJugar = true;
+		Boolean juegoIniciado = false;
 
 		public void init() {
 				Panel panel=new Panel();
-				boton1=new Button("Nueva Carta");
+				boton1=new Button("Pedir Carta");
 				boton2=new Button("Me planto");
 				panel.add(boton1);
 				panel.add(boton2);
@@ -56,27 +58,29 @@ import java.applet.*;
 		  public boolean action(Event ev, Object obj){
 			  if(ev.target instanceof TextField){
 				  apuesta.setEditable(false);
+				  juegoIniciado = true;
 				  manoJugador.anadirALista(baraja.sacar());
 				  manoJugador.anadirALista(baraja.sacar());
 				  manoCrouppier.anadirALista(baraja.sacar());
 				  repaint();
 				  return true;
 			  }else if(ev.target instanceof Button){
-				  	if(ev.arg.equals("Nueva Carta")){
+				  	if(ev.arg.equals("Pedir Carta") && puedoJugar == true && juegoIniciado == true){
 				  		manoJugador.anadirALista(baraja.sacar());
 						repaint();
 						if(manoJugador.seHaPasado())
 							juegaElCrouppier();
 						return true;
-				  	}else if(ev.arg.equals("Me planto")){
+				  	}else if(ev.arg.equals("Me planto") && puedoJugar == true && juegoIniciado == true){
 				  		juegaElCrouppier();
+				  		puedoJugar = false;
 				  		return true;
 				  	}
 			  	}
 			  return false;
 		  }
 		public void juegaElCrouppier(){
-			while(manoCrouppier.menor17())
+			while(manoCrouppier.menor17() || manoJugador.puntuacion()>manoCrouppier.puntuacion())
 		  		manoCrouppier.anadirALista(baraja.sacar());
 	  		repaint();
 	  	
